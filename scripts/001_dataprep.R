@@ -14,8 +14,18 @@ pokemon_t001 <- pokemon_t000 %>%
          # misspelling
   rename(classification = classfication) %>%
          # pokemon with incorrect/extra types due to regional variation
-  mutate(type1 = case_when(TRUE ~ type1),
+  mutate(type1 = case_when(pokedex_number == 27 ~ "Ground",
+                           pokedex_number == 28 ~ "Ground",
+                           TRUE ~ type1),
          type2 = case_when(pokedex_number == 19 ~ NA_character_,
+                           pokedex_number == 20 ~ NA_character_,
+                           pokedex_number == 27 ~ NA_character_,
+                           pokedex_number == 28 ~ NA_character_,
+                           pokedex_number == 37 ~ NA_character_,
+                           pokedex_number == 38 ~ NA_character_,
+                           pokedex_number == 52 ~ NA_character_,
+                           pokedex_number == 53 ~ NA_character_,
+                           pokedex_number == 105 ~ NA_character_,
                            TRUE ~ type2),
          # remove duplicate types
          type2 = case_when(type2 == type1 ~ NA_character_, 

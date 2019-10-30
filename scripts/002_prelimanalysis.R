@@ -258,10 +258,10 @@ ggplot(data = pokemon_dualtypes) +
         # legend.text = element_text(size = 15),
         # legend.key.height = unit(7, "line"),
         # legend.key.width = unit(3, "line"),
-        plot.caption = element_text(size = 12)) + 
-  annotate("text", x = 9, y = 9, 
-           label = "DRAFT", col="#bbbbbb", cex = 50,
-           fontface = "bold", alpha = 0.8)
+        plot.caption = element_text(size = 12)) 
+  # annotate("text", x = 9, y = 9, 
+  #          label = "DRAFT", col="#bbbbbb", cex = 50,
+  #          fontface = "bold", alpha = 0.8)
 ggsave(here("output", "types.png"), width = 10, height = 10, bg= "#ffffff")
 
 ##### notes ####
