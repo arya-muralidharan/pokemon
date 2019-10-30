@@ -1,2 +1,2 @@
 # pokemon
-Messing around with Pok'{e}mon data!
+Messing around with Pokemon data!
