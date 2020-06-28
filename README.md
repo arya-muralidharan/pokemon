@@ -1,2 +1,2 @@
 # pokemon
-Messing around with Pokemon data!
+Messing around with Pokemon data from [Kaggle](https://www.kaggle.com/rounakbanik/pokemon)!
