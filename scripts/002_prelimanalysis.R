@@ -262,7 +262,7 @@ ggplot(data = pokemon_dualtypes) +
   # annotate("text", x = 9, y = 9, 
   #          label = "DRAFT", col="#bbbbbb", cex = 50,
   #          fontface = "bold", alpha = 0.8)
-ggsave(here("output", "types.png"), width = 10, height = 10, bg= "#ffffff")
+ggsave(here("output", "types.png"), width = 5, height = 5, bg= "#ffffff")
 
 ##### notes ####
 
