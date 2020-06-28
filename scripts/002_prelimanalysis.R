@@ -237,7 +237,7 @@ pokemon_dualtypes <- pokemon_final %>%
 
 ggplot(data = pokemon_dualtypes) +
   geom_raster(aes(x = t1, y = t2, fill = total_pkmn)) +
-  geom_text(aes(x = t1, y = t2, label = total_pkmn)) +
+  geom_text(aes(x = t1, y = t2, label = total_pkmn), size = 2) +
   labs(title = "Pokémon Types, Generations I-VI",
        # x = "Type",
        # y = "Type",
@@ -249,20 +249,20 @@ ggplot(data = pokemon_dualtypes) +
         panel.grid.major = element_line(color = "transparent"),
         panel.grid.minor = element_blank(),
         plot.background = element_rect(fill = "transparent", color = NA),
-        plot.title = element_text(size = 13),
+        plot.title = element_text(size = 10),
         axis.title = element_blank(),
-        axis.text = element_text(size = 7),
+        axis.text = element_text(size = 5),
         axis.text.x = element_text(angle = 90, vjust = 0.4, hjust = 1),
         legend.position = "none",
         # legend.title = element_text(size = 20, hjust = 0.5),
         # legend.text = element_text(size = 15),
         # legend.key.height = unit(7, "line"),
         # legend.key.width = unit(3, "line"),
-        plot.caption = element_text(size = 6)) 
+        plot.caption = element_text(size = 4)) 
   # annotate("text", x = 9, y = 9, 
   #          label = "DRAFT", col="#bbbbbb", cex = 50,
   #          fontface = "bold", alpha = 0.8)
-ggsave(here("output", "types.png"), width = 5, height = 5, bg= "#ffffff")
+ggsave(here("output", "types.png"), width = 3, height = 3, bg= "#ffffff")
 
 ##### notes ####
 
