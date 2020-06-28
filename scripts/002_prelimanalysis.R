@@ -147,11 +147,11 @@ pokemon_dualtypes <- pokemon_final %>%
          # create product column
          product = ta*tb) %>%
   # group type pairs together
-  group_by(product) %>% 
+  group_by(product) %>%
   summarise(total_pkmn = sum(total_pkmn, na.rm = T),
-            pf = suppressWarnings(primeFactorization(product))) %>%
+              pf = suppressWarnings(primeFactorization(product))) %>%
   mutate(b = map(pf, ~ as_tibble(split(., letters[2:3])))) %>%
-  unnest(b, .drop = FALSE) %>%
+  unnest(b) %>%
   mutate(t1 = case_when(b == 2 ~ "bug",
                         b == 3 ~ "dark",
                         b == 5 ~ "dragon",

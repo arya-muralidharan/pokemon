@@ -10,12 +10,12 @@ library(tidyverse)
 pokemon_t000 <- read_csv(here("data", "pokemon.csv"))
 
 #### INITIAL PREP ####
-pokemon_t001 <- pokemon_t000 %>%
+pokemon_final <- pokemon_t000 %>%
          # misspelling
   rename(classification = classfication) %>%
          # pokemon with incorrect/extra types due to regional variation
-  mutate(type1 = case_when(pokedex_number == 27 ~ "Ground",
-                           pokedex_number == 28 ~ "Ground",
+  mutate(type1 = case_when(pokedex_number == 27 ~ "ground",
+                           pokedex_number == 28 ~ "ground",
                            TRUE ~ type1),
          type2 = case_when(pokedex_number == 19 ~ NA_character_,
                            pokedex_number == 20 ~ NA_character_,
@@ -93,87 +93,59 @@ pokemon_t001 <- pokemon_t000 %>%
          capture_rate = case_when(pokedex_number == 774 ~ 30,
                                   TRUE ~ capture_rate),
          capture_rate2 = case_when(pokedex_number == 774 ~ 255),
-         
          # pokemon missing heights/weights due to regional variation
          height_m = case_when(pokedex_number == 19 ~ 0.3,
                               TRUE ~ height_m),
          weight_kg = case_when(pokedex_number == 19 ~ 3.5,
-                               TRUE ~ weight_kg)) %>%
-          # make sure data is in order of pokedex number
-  arrange(pokedex_number)
-
-#### ABILITIES ####
-# separate abilities into separate columns
-pokemon_t002 <- pokemon_t001 %>% 
-  pull(abilities) %>% 
-  as.list() %>%
-  str_replace_all("\\[|\\]", "") %>%
-  as.list() %>%
-  str_replace_all("\\'|\\'", "") %>%
-  as.list() %>%
-  str_split(", ") %>%
-  plyr::ldply(rbind) %>% 
-  as_tibble() %>%
-  # add row id column (this will be the pokedex number)
-  rowid_to_column() %>%
-         # convert to character
-  mutate(`1` = as.character(`1`),
-         `2` = as.character(`2`),
-         `3` = as.character(`3`),
-         `4` = as.character(`4`),
-         `5` = as.character(`5`),
-         `6` = as.character(`6`),
-         # deal with repeated abilities
-         `4` = case_when(rowid == 50 ~ `5`,
-                         rowid == 51 ~ `5`,
-                         rowid == 52 ~ `6`,
-                         rowid == 88 ~ `6`,
-                         rowid == 89 ~ `6`,
-                         rowid == 103 ~ NA_character_,
-                         rowid == 745 ~ `6`,
-                         TRUE ~ `4`),
-         `5` = case_when(rowid == 19 ~ `6`,
-                         rowid == 20 ~ `6`,
-                         rowid == 50 ~ NA_character_,
-                         rowid == 51 ~ NA_character_,
-                         rowid == 52 ~ NA_character_,
-                         rowid == 53 ~ `6`,
-                         rowid == 74 ~ `6`,
-                         rowid == 75 ~ `6`,
-                         rowid == 76 ~ `6`,
-                         rowid == 105 ~ NA_character_,
-                         TRUE ~ `5`),
-         `6` = case_when(rowid == 19 ~ NA_character_,
-                         rowid == 20 ~ NA_character_,
-                         rowid == 50 ~ NA_character_,
-                         rowid == 51 ~ NA_character_,
-                         rowid == 52 ~ NA_character_,
-                         rowid == 53 ~ NA_character_,
-                         rowid == 74 ~ NA_character_,
-                         rowid == 75 ~ NA_character_,
-                         rowid == 76 ~ NA_character_,
-                         rowid == 88 ~ NA_character_,
-                         rowid == 89 ~ NA_character_,
-                         rowid == 105 ~ NA_character_,
-                         rowid == 745 ~ NA_character_,
-                         TRUE ~ `6`),
+                               TRUE ~ weight_kg),
+         # deal with abilities column
+         abilities = str_replace_all(abilities, c("\\[|\\]" = "", "\\'|\\'" = ""))) %>%
+  # separate abilities column into multiple columns
+  separate(col = abilities, 
+           sep = ", ",
+           into = c('ability1', 'ability2', 'ability3', 'ability4', 
+                    'ability5', 'ability6')) %>%
+         # fix repeated abilities
+  mutate(ability4 = case_when(pokedex_number == 50 ~ ability5,
+                              pokedex_number == 51 ~ ability5,
+                              pokedex_number == 52 ~ ability6,
+                              pokedex_number == 88 ~ ability6,
+                              pokedex_number == 89 ~ ability6,
+                              pokedex_number == 103 ~ NA_character_,
+                              pokedex_number == 745 ~ ability6,
+                              TRUE ~ ability4),
+         ability5 = case_when(pokedex_number == 19 ~ ability6,
+                              pokedex_number == 20 ~ ability6,
+                              pokedex_number == 50 ~ NA_character_,
+                              pokedex_number == 51 ~ NA_character_,
+                              pokedex_number == 52 ~ NA_character_,
+                              pokedex_number == 53 ~ ability6,
+                              pokedex_number == 74 ~ ability6,
+                              pokedex_number == 75 ~ ability6,
+                              pokedex_number == 76 ~ ability6,
+                              pokedex_number == 105 ~ NA_character_,
+                              TRUE ~ ability5),
+         ability6 = case_when(pokedex_number == 19 ~ NA_character_,
+                              pokedex_number == 20 ~ NA_character_,
+                              pokedex_number == 50 ~ NA_character_,
+                              pokedex_number == 51 ~ NA_character_,
+                              pokedex_number == 52 ~ NA_character_,
+                              pokedex_number == 53 ~ NA_character_,
+                              pokedex_number == 74 ~ NA_character_,
+                              pokedex_number == 75 ~ NA_character_,
+                              pokedex_number == 76 ~ NA_character_,
+                              pokedex_number == 88 ~ NA_character_,
+                              pokedex_number == 89 ~ NA_character_,
+                              pokedex_number == 105 ~ NA_character_,
+                              pokedex_number == 745 ~ NA_character_,
+                              TRUE ~ ability6),
          # count abilities
-         abilities_count = case_when(is.na(`2`) ~ 1,
-                                     is.na(`3`) ~ 2,
-                                     is.na(`4`) ~ 3,
-                                     is.na(`5`) ~ 4,
-                                     is.na(`6`) ~ 5,
+         abilities_count = case_when(is.na(ability2) ~ 1,
+                                     is.na(ability3) ~ 2,
+                                     is.na(ability4) ~ 3,
+                                     is.na(ability5) ~ 4,
+                                     is.na(ability6) ~ 5,
                                      TRUE ~ 6)) %>%
-  select(-c(`6`))
-
-# add column names
-colnames(pokemon_t002) <- c("pokedex_number", "ability1", "ability2", "ability3", 
-                             "ability4", "ability5", "abilities_count")
-  
-
-#### FINAL DATA ####
-# join pokemon and abilities data by pokedex number
-pokemon_final <- full_join(pokemon_t002, pokemon_t001, by = "pokedex_number") %>%
   # reorder variables
   select(pokedex_number, name, generation, classification, type1, type2, types_count,
          height_m, weight_kg, 
@@ -181,8 +153,8 @@ pokemon_final <- full_join(pokemon_t002, pokemon_t001, by = "pokedex_number") %>
          is_legendary,
          ability1, ability2, ability3, ability4, ability5, abilities_count,
          everything()) %>%
-  # remove abilities column
-  select(-c(abilities)) %>%
+  # remove ability6 column
+  select(-c(ability6)) %>%
   #### TO DO ####
   # fix abilities for pokemon with regional variants
   # filter gen 7 pokemon & remove gen 7-only variables because gen 7 data is incomplete
